@@ -1,6 +1,9 @@
 package keyring
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 // provider set in the init function by the relevant os file e.g.:
 // keyring_unix.go
@@ -19,6 +22,14 @@ var (
 
 // SetProvider sets the provider for the keyring
 func SetProvider(p Keyring) {
+	fmt.Println("SetProvider called")
+	// If the provider has a Setup method, call it.
+	if p, ok := p.(interface{ Setup() error }); ok {
+		fmt.Println("Setup method found")
+		p.Setup()
+	} else {
+		fmt.Println("Setup method not found")
+	}
 	provider = p
 }
 
